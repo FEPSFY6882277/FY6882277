@@ -52,6 +52,15 @@
         await getLastUpdatedTime();
         alert("Last modified time has been successfully verified from GitHub API.");
     }
+
+function countWords() {
+          const bodyText = document.body.innerText || "";
+          const cleanedText = bodyText.replace(/\s+/g, ' ').trim();
+          const words = cleanedText.split(/\s+/);
+          const wordCount = words.filter(word => word.length > 0).length;
+          document.getElementById('word-count').innerText = `Word Count: ${wordCount}`;
+      }
+  
     // Initial load to display the time on page load
     window.onload = getLastUpdatedTime;
 </script>
