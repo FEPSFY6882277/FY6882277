@@ -15,6 +15,15 @@
 <button onclick="verifyLastUpdatedTime()" style="display: block; margin: 10px auto; padding: 8px 16px;">
     Verify Last Modified Time
 </button>
+
+<!-- Word Counter -->
+    <div style="margin-top: 20px; text-align: center;">
+        <button onclick="countWords()" style="padding: 8px 16px;">Count Words</button>
+        <p id="word-count">Word Count: --</p>
+    </div>
+
+    <script>
+         
 <script>
     async function getLastUpdatedTime() {
         const username = 'FEPSFY6882277';
