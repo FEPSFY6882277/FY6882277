@@ -57,72 +57,7 @@
 </script>
 
 
- <!-- Word Count Script -->
-<p id="totalWordCount"></p>
-<hr>
-<script>
-/* ---- Helper: get visible text from an element, minus figures/media/links ---- */
-function getCleanTextFromElementById(id) {
-  const el = document.getElementById(id);
-  if (!el) return '';
-  // Clone to avoid altering original
-  const clone = el.cloneNode(true);
-  // Remove unwanted nodes
-  clone.querySelectorAll('script, style, figure, figcaption, video, img, a').forEach(n => n.remove());
-  // Get text
-  let text = clone.innerText || clone.textContent || '';
-  // Remove media filenames and URLs
-  text = text.replace(/\b\S+\.(?:mp4|mov|mkv|jpg|jpeg|png|gif|svg|mp3|wav|pdf)\b/gi, ' ');
-  text = text.replace(/https?:\/\/\S+/gi, ' ');
-  return text.trim();
-}
-
-/* ---- Helper: count words in cleaned text ---- */
-function countWordsInText(text) {
-  if (!text) return 0;
-  const matches = text.match(/[A-Za-zÀ-ÖØ-öø-ÿ0-9]+(?:['-][A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*/g);
-  return matches ? matches.length : 0;
-}
-
-/* ---- Main: compute total and show breakdown ---- */
-function displayTotalWordCount() {
-  const sectionIds = [
-    'Introduction_InText',
-    'Additive_InText',
-    'The_InText',
-    'ARVR_InText',
-    'Conclusion_InText'
-  ];
-
-  let total = 0;
-  const breakdown = [];
-
-  sectionIds.forEach(id => {
-    const text = getCleanTextFromElementById(id);
-    const c = countWordsInText(text);
-    breakdown.push({ id, count: c });
-    total += c;
-  });
-
-  const out = document.getElementById('totalWordCount');
-  if (out) out.innerText = `Total word count: ${total}`;
-
-  // Optional: per-section breakdown
-  let details = document.getElementById('wordCountDetails');
-  if (!details) {
-    details = document.createElement('div');
-    details.id = 'wordCountDetails';
-    details.style.marginTop = '6px';
-    if (out && out.parentNode) out.parentNode.insertBefore(details, out.nextSibling);
-  }
-  details.innerHTML = breakdown
-    .map(b => `<div>${b.id.replace('_InText','')}: ${b.count}</div>`)
-    .join('');
-}
-
-/* Run after DOM loads (won't overwrite other onload functions) */
-document.addEventListener('DOMContentLoaded', displayTotalWordCount);
-</script>
+<p>Total word count = 992 words</p>
 
          
 <meta name="viewport" content="width=device-width, initial-scale=1">
