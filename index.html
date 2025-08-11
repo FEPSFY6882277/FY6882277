@@ -57,40 +57,73 @@
 </script>
 
 
- <!-- //////////////////////////////////////////////////////////////////////////////// -->
-  <!-- ////////////////////////////// Word count function ////////////////////////////// -->
-  <!-- //////////////////////////////////////////////////////////////////////////////// -->
-<!-- Placeholder for total word count -->
+ <!-- Word Count Script -->
 <p id="totalWordCount"></p>
 <hr>
 <script>
-  // Function to calculate and display word count for a specified section
-  function displayWordCount(sectionId, outputId) {
-    // Get the text content from the specified section
-    const text = document.getElementById(sectionId).textContent;
-    // Split text into words based on spaces and filter out any empty strings
-    const wordArray = text.trim().split(/\s+/);
-    // Count the words
-    const wordCount = wordArray.length;
-    // Return the word count for summing purposes
-    return wordCount;
+/* ---- Helper: get visible text from an element, minus figures/media/links ---- */
+function getCleanTextFromElementById(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  // Clone to avoid altering original
+  const clone = el.cloneNode(true);
+  // Remove unwanted nodes
+  clone.querySelectorAll('script, style, figure, figcaption, video, img, a').forEach(n => n.remove());
+  // Get text
+  let text = clone.innerText || clone.textContent || '';
+  // Remove media filenames and URLs
+  text = text.replace(/\b\S+\.(?:mp4|mov|mkv|jpg|jpeg|png|gif|svg|mp3|wav|pdf)\b/gi, ' ');
+  text = text.replace(/https?:\/\/\S+/gi, ' ');
+  return text.trim();
+}
+
+/* ---- Helper: count words in cleaned text ---- */
+function countWordsInText(text) {
+  if (!text) return 0;
+  const matches = text.match(/[A-Za-zÀ-ÖØ-öø-ÿ0-9]+(?:['-][A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*/g);
+  return matches ? matches.length : 0;
+}
+
+/* ---- Main: compute total and show breakdown ---- */
+function displayTotalWordCount() {
+  const sectionIds = [
+    'Introduction_InText',
+    'Additive_InText',
+    'The_InText',
+    'ARVR_InText',
+    'Conclusion_InText'
+  ];
+
+  let total = 0;
+  const breakdown = [];
+
+  sectionIds.forEach(id => {
+    const text = getCleanTextFromElementById(id);
+    const c = countWordsInText(text);
+    breakdown.push({ id, count: c });
+    total += c;
+  });
+
+  const out = document.getElementById('totalWordCount');
+  if (out) out.innerText = `Total word count: ${total}`;
+
+  // Optional: per-section breakdown
+  let details = document.getElementById('wordCountDetails');
+  if (!details) {
+    details = document.createElement('div');
+    details.id = 'wordCountDetails';
+    details.style.marginTop = '6px';
+    if (out && out.parentNode) out.parentNode.insertBefore(details, out.nextSibling);
   }
-  // Function to calculate and display total word count from selected sections
-  function displayTotalWordCount() {
-    // Calculate word count for each section and accumulate the total
-    const IntroductionCount = displayWordCount("Introduction_InText");
-    const AdditiveCount = displayWordCount("Additive_InText");
-    const TheCount = displayWordCount("The_InText");
-    const ARVRCount = displayWordCount("ARVR_InText");
-    const ConclusionCount = displayWordCount("Conclusion_InText");
-    // Calculate the sum of all selected sections
-    const totalWordCount = IntroductionCount + AdditiveCount + TheCount + ARVRCount + ConclusionCount;
-    // Display the total word count
-    document.getElementById("totalWordCount").innerText = `Total word count: ${totalWordCount}`;
-  }
-  // Run the function for specific sections and display total count when the page loads
-  window.onload = displayTotalWordCount;
+  details.innerHTML = breakdown
+    .map(b => `<div>${b.id.replace('_InText','')}: ${b.count}</div>`)
+    .join('');
+}
+
+/* Run after DOM loads (won't overwrite other onload functions) */
+document.addEventListener('DOMContentLoaded', displayTotalWordCount);
 </script>
+
          
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link  rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css>
